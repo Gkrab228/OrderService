@@ -17,3 +17,4 @@
 /home/ruckmar/Desktop/OrderApp/bin/Debug/net10.0/Spectre.Console.Ansi.dll
 /home/ruckmar/Desktop/OrderApp/obj/Debug/net10.0/OrderApp.csproj.AssemblyReference.cache
 /home/ruckmar/Desktop/OrderApp/obj/Debug/net10.0/OrderApp.csproj.Up2Date
+/home/ruckmar/Desktop/OrderApp/obj/Debug/net10.0/OrderApp.sourcelink.json

@@ -4,21 +4,20 @@ class Program
 {
   static void Main()  
   {
-    var order1 = new Order();
+    var order1 = new Order(Currency.USD);
     order1.AddItem("Oranges",2.99m);
-    
+    Console.WriteLine(order1.GetCostofOrder()); 
   }
 }
 
 
-public class Order(bool isPending=true)
+public class Order(Currency currency, bool isPending=true)
 {
   private bool isPending = isPending;
 
   private List<OrderItem> Items = new(); 
 
-  private Money money = new Money(); 
-
+  private Money money = new(currency);
 
   public void AddItem(string name, decimal value)
   {
@@ -26,6 +25,16 @@ public class Order(bool isPending=true)
     if(value < 0) throw new ArgumentOutOfRangeException("Value can't be negative");
 
     Items.Add(new OrderItem(value, name));
+  }
+
+  public decimal GetCostofOrder()
+  {
+    decimal sum=0;
+    foreach(var order in Items)
+    {
+      sum = order.Value;
+    }
+    return sum; 
   }
 }
 
