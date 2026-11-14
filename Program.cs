@@ -5,61 +5,54 @@ class Program
   static void Main()  
   {
     var order1 = new Order(Currency.USD);
-    order1.AddItem("Oranges",2.99m);
-    Console.WriteLine(order1.GetCostofOrder()); 
+    order1.AddItem("Oranges",new Money(2.99m, Currency.USD));
+    order1.AddItem("Apples", new Money(1.99m, Currency.USD));
+    Console.WriteLine(order1.TotalPrice()); 
+    // order1.AddItem("Books", new Money(10.99m, Currency.EUR));
   }
 }
 
 
-public class Order(Currency currency, bool isPending=true)
+public class Order(Currency currency)
 {
-  private bool isPending = isPending;
-
+  private bool isPending = true;
+  private decimal _totalPrice;
   private List<OrderItem> Items = new(); 
+  private Currency DefaultCurrency = currency;
 
-  private Money money = new(currency);
-
-  public void AddItem(string name, decimal value)
+  public void CloseOrder()
   {
-    if(this.isPending==false) throw new ArgumentException("The order isn't pending"); 
-    if(value < 0) throw new ArgumentOutOfRangeException("Value can't be negative");
-
-    Items.Add(new OrderItem(value, name));
+    isPending = false;
   }
 
-  public decimal GetCostofOrder()
+  public void AddItem(string name, Money money)
   {
-    decimal sum=0;
-    foreach(var order in Items)
-    {
-      sum = order.Value;
-    }
-    return sum; 
+    if(this.isPending==false) throw new InvalidOperationException("The order isn't pending"); 
+    if(DefaultCurrency!=money.Currency) throw new ArgumentException("Invalid Currency");
+
+    Console.WriteLine(money.Amount);
+    Items.Add(new OrderItem(name, money));
+    _totalPrice += money.Amount;
   }
+  public decimal TotalPrice() => _totalPrice;
 }
 
-public record OrderItem(decimal Value, string Name);
-
+public record OrderItem(string Name, Money money);
 
 public enum Currency
 {
   USD,
   EUR 
 }
-readonly record struct Money
+public readonly record struct Money
 {
-  public Currency DefaultCurrency { get; } 
-
-  public Money(Currency DefaultCurrency)
+  public Currency Currency { get; } 
+  public decimal Amount { get; }
+  public Money(decimal Amount, Currency Currency)
   {
-
-    this.DefaultCurrency = DefaultCurrency;
-
+    if(Amount < 0) throw new ArgumentOutOfRangeException();
+    this.Amount = Amount;
+    this.Currency = Currency;
   }
-  readonly public Dictionary<Currency, decimal> ConversionRate = new()
-  {
-    {Currency.USD, 1},
-    {Currency.EUR, 0.89m}
-  };
 
 }
