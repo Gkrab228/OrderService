@@ -16,7 +16,6 @@ class Program
 public class Order(Currency currency)
 {
   private bool isPending = true;
-  private decimal _totalPrice;
   private List<OrderItem> Items = new(); 
   private Currency DefaultCurrency = currency;
 
@@ -30,11 +29,15 @@ public class Order(Currency currency)
     if(this.isPending==false) throw new InvalidOperationException("The order isn't pending"); 
     if(DefaultCurrency!=money.Currency) throw new ArgumentException("Invalid Currency");
 
-    Console.WriteLine(money.Amount);
     Items.Add(new OrderItem(name, money));
-    _totalPrice += money.Amount;
   }
-  public decimal TotalPrice() => _totalPrice;
+  public Money TotalPrice() 
+  {
+    return new Money(
+      Items.Sum(OrderItem => OrderItem.money.Amount),
+      DefaultCurrency
+    );
+  }
 }
 
 public record OrderItem(string Name, Money money);
